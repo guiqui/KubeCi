@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sonar-postgres
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: sonar-postgres
+      labels:
+        app: sonar-postgres
+    spec:
+      containers:
+        - image: postgres:9.5.3
+          name: sonar-postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              value: guiqui
+            - name: POSTGRES_USER
+              value: sonar
+            - name : POSTGRES_DB
+              value : sonar
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: "jenkins-data"
+              mountPath: /var/lib/postgresql/data
+              subPath : "sonar-postgres"
+      volumes:
+        - name: "jenkins-data"
+          persistentVolumeClaim: 
+            claimName: "jenkins-volume-claim"
